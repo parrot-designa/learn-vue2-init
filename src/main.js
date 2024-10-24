@@ -11,7 +11,9 @@ import Vue from "@/my-vue2/platforms/web/entry-runtime-with-compiler-esm";
 
 // const { render } = compileToFunctions(`<div><span>我是爱吃水果的人</span></div>`)
 
-const vm = Vue();
+// const vm = Vue();
+
+const vm = new Vue();
 
 
  

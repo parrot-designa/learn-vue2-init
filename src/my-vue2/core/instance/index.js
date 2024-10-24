@@ -1,4 +1,5 @@
 import { warn } from "../util";
+import { initMixin } from "./init";
 
 function Vue(options) { 
     if(__DEV__ && !(this instanceof Vue)){
@@ -8,6 +9,7 @@ function Vue(options) {
 }
 
 // 使用 initMixin 注入了 初始化有关的属性如：Vue.prototype.$init
+initMixin(Vue);
 // 使用 stateMixin 注入了 跟状态有关的属性如：Vue.prototype.$set、Vue.prototype.$watch、Vue.prototype.$delete
 // 使用 eventsMixin 注入了 跟事件有关的属性如：Vue.prototype.$on、Vue.prototype.$off、Vue.prototype.$once
 // 使用 lifecycleMixin 注入了 跟整个 vue生命周期更新有关的属性如：Vue.prototype.$update
