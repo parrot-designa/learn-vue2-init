@@ -8,41 +8,7 @@
 
 [专栏文章四 - 🔥从零手写vue2 - 窥探入口 && 源码构建](https://juejin.cn/post/7428888167276429353)
 
-本专栏是打算从零手写一个 vue2，并学习 vue2 中的一些核心理念。
-
-目前我们已经实现了下面的目录。
-
-```js
-my-vue2
-├─shared
-|   └util.js
-├─platforms
-|     ├─web
-|     |  ├─entry-runtime-with-compiler-esm.js
-|     |  ├─runtime-with-compiler.js
-|     |  ├─runtime
-|     |  |    └index.js
-|     |  ├─compiler
-|     |  |    └index.js
-├─core
-|  ├─index.js
-|  ├─vdom
-|  |  ├─create-element.js
-|  |  └vnode.js
-|  ├─util
-|  |  ├─debug.js
-|  |  ├─index.js
-|  |  └lang.js
-|  ├─instance
-|  |    └index.js
-├─compiler
-|    ├─index.js
-|    ├─parse
-|    |   ├─html-parser.js
-|    |   └index.js
-|    ├─codegen
-|    |    └index.js
-```
+本专栏是打算从零手写一个 vue2，并学习 vue2 中的一些核心理念。 
 
 # 一、构造函数中调用_init
 
@@ -52,8 +18,8 @@ my-vue2
 
 上篇我们说到在构造函数内部对是否使用 new 关键字进行判断。
 
-还调用了实例上的_init方法。
-
+这篇我们说下校验过后调用的_init方法中的逻辑。
+ 
 ```js
 function Vue(options) { 
     if(__DEV__ && !(this instanceof Vue)){
@@ -68,6 +34,14 @@ function Vue(options) {
 这个方法在定义在initMixin中。
 
 在Vue加载时在 ```instance/index.js``` 文件中调用了 initMixin 函数。
+
+```js
+export function initMixin(Vue){
+  Vue.prototype._init = function(options){
+    // xxx
+  }
+}
+```
   
 # 二、什么是实例？
 
@@ -250,18 +224,44 @@ Vue.prototype.init=function(){
 }
 ```
 
-# 七、合并选项 options
+# 七、使用 mergeOptiosns 生成$options
+
+mergeOptions 函数对Vue.options和options进行了合并。
+
+然后将合并后的结果赋值给 vm.$options。
 
 ```js
-// 组件合并暂时不讨论
-if(options && options._isComponent){
+Vue.prototype.init=function(){
+  vm.__v_skip = true
+  // 组件合并暂时不讨论
+  if(options && options._isComponent){
 
-}else{
-              
+  }else{
+    vm.$options = mergeOptions(
+      vm.constructor.options,
+      options || {},
+      vm
+    )
+  }
 }
+
 ```
 
-# 十、vm._self = vm
+由于这个比较复杂，后续我们会单独新开一节进行说明。
+
+```js
+export function mergeOptions(
+    parent,
+    child,
+    vm
+){
+    return {
+        ...parent,
+        ...child
+    }
+}
+``` 
+# 八、vm._self = vm
 
 ```js
 Vue.prototype.init=function(){

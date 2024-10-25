@@ -1,6 +1,7 @@
 
 import { mark,measure } from "../util/perf";
 import config from "../config";
+import { mergeOptions } from "../util/options";
 
 let uid = 0;
 
@@ -27,7 +28,11 @@ export function initMixin(Vue){
         if(options && options._isComponent){
 
         }else{
-            
+            vm.$options = mergeOptions(
+                vm.constructor.options,
+                options || {},
+                vm
+            )
         }
         // 将 vm._self指向实例本身
         vm._self = vm; 
