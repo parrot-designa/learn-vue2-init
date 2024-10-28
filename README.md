@@ -33,7 +33,7 @@ function Vue(options) {
 
 这个方法在定义在initMixin中。
 
-在Vue加载时在 ```instance/index.js``` 文件中调用了 initMixin 函数。
+Vue加载时在 ```instance/index.js``` 文件中调用了 initMixin 函数。
 
 ```js
 export function initMixin(Vue){
@@ -53,7 +53,9 @@ vm 在上下文中通常指的是“View Model”，这是 Vue实例的一个引
 
 可以通过vm变量访问挂载到实例上的属性。
 
-vue中的每一个组件都对应着一个 vue实例。
+vue中的每一个组件都对应着存在一个vue实例。
+
+组件中定义的方法、属性等都挂载在这个实例上。
 
 # 三、vm._uid 
 
@@ -128,15 +130,13 @@ export function initGlobalAPI(Vue){
 ``` 
 根据上面的配置可以知道 `Vue.config`获取的就是默认的配置信息。
 
-export或export default一个对象时，对象的属性在外部脚本中都是可以修改的。 
-
-export default的值在外部脚本中也是不能修改的，只是属性可以被修改。
+export或export default一个对象时，对象本身在外部脚本中是不能修改的。但是对象的属性在外部脚本中都是可以修改的。 
 
 所以你可以通过 `Vue.config.xxx = 'xxx'`来设置配置或者覆盖默认的配置。
 
 ## 4.2 mark函数 & measure函数
 
-mark函数和 measure函数 是 vue中进行性能检测的函数。
+mark函数 和 measure函数是vue中进行性能检测的函数。
 
 函数位于`core/util/perf`文件中。
 
@@ -238,6 +238,7 @@ Vue.prototype.init=function(){
 
   }else{
     vm.$options = mergeOptions(
+      // 这里代表构造函数的 options 即 Vue.options
       vm.constructor.options,
       options || {},
       vm
@@ -250,6 +251,7 @@ Vue.prototype.init=function(){
 由于这个比较复杂，后续我们会单独新开一节进行说明。
 
 ```js
+// 内容比较复杂 我们这里先做简单的合并
 export function mergeOptions(
     parent,
     child,
@@ -273,6 +275,26 @@ Vue.prototype.init=function(){
 
 可以确保在任何情况下都能正确引用当前实例。
 
+# 九、分别执行一些初始化操作
+
+用于初始化生命周期、初始化事件中心、初始化渲染、初始化 data、props、computed、watcher 等等。
+
+细节我们后面会慢慢实现，目前咱不实现，只需要知道在初始化时初始化了这些东西。
+
+```js
+// 初始化生命周期
+initLifeCycle(vm);
+// 初始化事件中心
+initEvents(vm)
+// 初始化渲染
+initRender(vm)
+// 初始化 inject
+initInjections(vm)
+// 初始化 props、data、computed 等
+initState(vm)
+// 初始化 provider
+initProvide(vm)
+```
 
 
 

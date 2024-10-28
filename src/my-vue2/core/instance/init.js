@@ -2,7 +2,12 @@
 import { mark,measure } from "../util/perf";
 import config from "../config";
 import { mergeOptions } from "../util/options";
-
+import { initLifeCycle } from "./lifecycle";
+import { initEvents } from "./events";
+import { initRender } from "./render";
+import { initState } from "./state";
+import { initProvide,initInjections } from "./inject";
+ 
 let uid = 0;
 
 export function initMixin(Vue){
@@ -36,6 +41,18 @@ export function initMixin(Vue){
         }
         // 将 vm._self指向实例本身
         vm._self = vm; 
+        // 初始化生命周期
+        initLifeCycle(vm);
+        // 初始化事件中心
+        initEvents(vm)
+        // 初始化渲染
+        initRender(vm)
+        // 初始化 inject
+        initInjections(vm)
+        // 初始化 props、data、computed 等
+        initState(vm)
+        // 初始化 provider
+        initProvide(vm)
         // init 函数初始化逻辑完成
         if (__DEV__ && config.performance && mark) {
             mark(endTag)
