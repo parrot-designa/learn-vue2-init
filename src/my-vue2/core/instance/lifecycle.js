@@ -1,2 +1,2 @@
 
-export function initLifecycle(vm) {}
+export function initLifeCycle(vm) {}
